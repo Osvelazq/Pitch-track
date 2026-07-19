@@ -55,13 +55,18 @@
     <p>SO: <span id="so">0</span> | BB: <span id="bb">0</span></p>
     
     <div class="row">
-        <button id="analyzeBtn" onclick="analyzeStats()">Analyze</button>
+        <button id="analyzeBtn" onclick="openStats()">View Game Stats</button>
     </div>
-    <div id="analysisResult" class="stats" style="color: #007bff; margin-top: 10px;"></div>
-    
     <div class="row">
         <button id="exportBtn" onclick="exportData()">Export</button>
         <button id="resetBtn" onclick="reset()">Reset</button>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" style="display:none; position:fixed; top:10%; left:5%; width:90%; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.5); z-index:100; border: 1px solid #ccc;">
+        <h3>Game Stats</h3>
+        <div id="statsContent" style="text-align: left; font-size: 16px;"></div>
+        <button onclick="document.getElementById('statsModal').style.display='none'" style="margin-top:20px; padding:10px; width:100%; background-color:#555;">Close</button>
     </div>
 
     <script>
@@ -105,12 +110,17 @@
             updateUI();
         }
 
-        function analyzeStats() {
+        function openStats() {
             let totalPitches = ts + tb;
-            if (totalPitches === 0) { alert("No pitches recorded!"); return; }
-            let strikePct = ((ts / totalPitches) * 100).toFixed(1);
-            let kPerIp = (ip > 0) ? (so / ip).toFixed(2) : 0;
-            document.getElementById('analysisResult').innerText = `Strike%: ${strikePct}% | K/IP: ${kPerIp}`;
+            let strikePct = totalPitches > 0 ? ((ts / totalPitches) * 100).toFixed(1) : "0.0";
+            let content = `<p>Total pitches: ${totalPitches}</p>
+                           <p>Strike %: ${strikePct}%</p>
+                           <p>Strikeouts: ${so}</p>
+                           <p>Walks: ${bb}</p>
+                           <p>Hits: ${h}</p>
+                           <p>IP: ${ip.toFixed(1)}</p>`;
+            document.getElementById('statsContent').innerHTML = content;
+            document.getElementById('statsModal').style.display = 'block';
         }
 
         function reset() { 
