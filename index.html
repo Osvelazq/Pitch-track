@@ -14,11 +14,15 @@
         .row-input { display: flex; justify-content: center; gap: 5px; margin-bottom: 5px; }
         input[type="text"] { padding: 10px; width: 60%; }
         input[type="number"] { padding: 10px; width: 20%; text-align: center; }
-        .stats { font-size: 20px; margin: 8px 0; font-weight: bold; }
-        .button-container { display: flex; flex-direction: column; gap: 10px; }
-        button { padding: 25px; font-size: 20px; border: none; border-radius: 8px; color: white; width: 100%; }
+        .stats { font-size: 18px; margin: 8px 0; font-weight: bold; }
+        
+        /* Compact Grid Layout */
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+        button { padding: 15px; font-size: 16px; border: none; border-radius: 8px; color: white; width: 100%; }
+        
         .row { display: flex; gap: 10px; margin-top: 15px; }
         .row button { padding: 15px; font-size: 16px; flex: 1; }
+        
         #strikeBtn { background-color: #d9534f; } 
         #ballBtn { background-color: #5cb85c; }   
         #hitBtn { background-color: #f0ad4e; }
@@ -46,12 +50,12 @@
     <div class="stats">Total: S:<span id="ts">0</span> | B:<span id="tb">0</span></div>
     <div class="stats">Hits: <span id="h">0</span> | Fouls: <span id="f">0</span> | IP: <span id="ip">0.0</span></div>
     
-    <div class="button-container">
+    <div class="button-grid">
         <button id="strikeBtn" onclick="add('s')">STRIKE</button>
         <button id="ballBtn" onclick="add('b')">BALL</button>
-        <button id="foulBtn" onclick="add('f')">FOUL BALL</button>
+        <button id="foulBtn" onclick="add('f')">FOUL</button>
         <button id="hitBtn" onclick="add('h')">HIT</button>
-        <button id="inningBtn" onclick="add('ip')">+1/3 Inning</button>
+        <button id="inningBtn" onclick="add('ip')" style="grid-column: span 2;">+1/3 INNING</button>
     </div>
 
     <p>SO: <span id="so">0</span> | BB: <span id="bb">0</span></p>
