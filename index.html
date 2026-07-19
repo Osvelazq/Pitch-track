@@ -23,6 +23,7 @@
         #ballBtn { background-color: #5cb85c; }   
         #hitBtn { background-color: #f0ad4e; }
         #inningBtn { background-color: #5bc0de; }
+        #analyzeBtn { background-color: #f77f00; }
         #exportBtn { background-color: #007bff; }
         #resetBtn { background-color: #333; }
     </style>
@@ -52,6 +53,11 @@
     </div>
 
     <p>SO: <span id="so">0</span> | BB: <span id="bb">0</span></p>
+    
+    <div class="row">
+        <button id="analyzeBtn" onclick="analyzeStats()">Analyze</button>
+    </div>
+    <div id="analysisResult" class="stats" style="color: #007bff; margin-top: 10px;"></div>
     
     <div class="row">
         <button id="exportBtn" onclick="exportData()">Export</button>
@@ -99,11 +105,16 @@
             updateUI();
         }
 
+        function analyzeStats() {
+            let totalPitches = ts + tb;
+            if (totalPitches === 0) { alert("No pitches recorded!"); return; }
+            let strikePct = ((ts / totalPitches) * 100).toFixed(1);
+            let kPerIp = (ip > 0) ? (so / ip).toFixed(2) : 0;
+            document.getElementById('analysisResult').innerText = `Strike%: ${strikePct}% | K/IP: ${kPerIp}`;
+        }
+
         function reset() { 
-            if(confirm("Reset all statistics?")) { 
-                localStorage.clear(); 
-                location.reload(); 
-            } 
+            if(confirm("Reset all statistics?")) { localStorage.clear(); location.reload(); } 
         }
 
         function exportData() {
