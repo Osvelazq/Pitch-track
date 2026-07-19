@@ -145,7 +145,13 @@
             let battersFaced = so + bb + h + out;
             let kPerIp = (ip > 0) ? (so / ip).toFixed(2) : "0.00";
 
+            let summary = strikePct > 60 ? "Great command." : "Needs more strikes.";
+            if (f > 10) summary += " High foul count.";
+
             let content = `
+                <div style="background:#f0f0f0; padding:10px; border-radius:8px; margin-bottom:15px;">
+                    <strong>Quick Summary:</strong><br>${summary}
+                </div>
                 <p><strong>Total pitches:</strong> ${totalPitches}</p>
                 <p><strong>Strike %:</strong> ${strikePct}%</p>
                 <p><strong>Strikeouts:</strong> ${so}</p>
