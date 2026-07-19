@@ -57,16 +57,17 @@
     <div class="row">
         <button id="analyzeBtn" onclick="openStats()">View Game Stats</button>
     </div>
+    
     <div class="row">
         <button id="exportBtn" onclick="exportData()">Export</button>
         <button id="resetBtn" onclick="reset()">Reset</button>
     </div>
 
     <!-- Stats Modal -->
-    <div id="statsModal" style="display:none; position:fixed; top:10%; left:5%; width:90%; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.5); z-index:100; border: 1px solid #ccc;">
+    <div id="statsModal" style="display:none; position:fixed; top:5%; left:5%; width:90%; height:90%; background:white; padding:20px; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:100; overflow-y:auto; border: 1px solid #ccc;">
         <h3>Game Stats</h3>
-        <div id="statsContent" style="text-align: left; font-size: 16px;"></div>
-        <button onclick="document.getElementById('statsModal').style.display='none'" style="margin-top:20px; padding:10px; width:100%; background-color:#555;">Close</button>
+        <div id="statsContent" style="text-align: left; font-size: 18px; line-height: 2;"></div>
+        <button onclick="document.getElementById('statsModal').style.display='none'" style="margin-top:20px; padding:15px; width:100%; background-color:#555;">Close</button>
     </div>
 
     <script>
@@ -113,12 +114,19 @@
         function openStats() {
             let totalPitches = ts + tb;
             let strikePct = totalPitches > 0 ? ((ts / totalPitches) * 100).toFixed(1) : "0.0";
-            let content = `<p>Total pitches: ${totalPitches}</p>
-                           <p>Strike %: ${strikePct}%</p>
-                           <p>Strikeouts: ${so}</p>
-                           <p>Walks: ${bb}</p>
-                           <p>Hits: ${h}</p>
-                           <p>IP: ${ip.toFixed(1)}</p>`;
+            let battersFaced = so + bb + h;
+            let kPerIp = (ip > 0) ? (so / ip).toFixed(2) : "0.00";
+
+            let content = `
+                <p><strong>Total pitches:</strong> ${totalPitches}</p>
+                <p><strong>Strike %:</strong> ${strikePct}%</p>
+                <p><strong>Strikeouts:</strong> ${so}</p>
+                <p><strong>Walks:</strong> ${bb}</p>
+                <p><strong>Hits:</strong> ${h}</p>
+                <p><strong>Batters Faced:</strong> ${battersFaced}</p>
+                <p><strong>IP:</strong> ${ip.toFixed(1)}</p>
+                <p><strong>K/IP:</strong> ${kPerIp}</p>
+            `;
             document.getElementById('statsContent').innerHTML = content;
             document.getElementById('statsModal').style.display = 'block';
         }
