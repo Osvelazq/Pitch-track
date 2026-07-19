@@ -16,6 +16,7 @@
         input[type="number"] { padding: 10px; width: 20%; text-align: center; }
         .stats { font-size: 18px; margin: 8px 0; font-weight: bold; }
         
+        /* Compact Grid Layout */
         .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         button { padding: 15px; font-size: 16px; border: none; border-radius: 8px; color: white; width: 100%; }
         
@@ -70,6 +71,7 @@
         <button id="resetBtn" onclick="reset()">Reset</button>
     </div>
 
+    <!-- Stats Modal -->
     <div id="statsModal" style="display:none; position:fixed; top:5%; left:2%; width:96%; height:90%; background:white; padding:15px; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:100; overflow-y:auto; border: 1px solid #ccc; box-sizing: border-box;">
         <h3>Game Stats</h3>
         <div id="statsContent" style="text-align: left; font-size: 18px; line-height: 1.8;"></div>
@@ -114,12 +116,23 @@
         }
 
         function add(type) {
-            if(type=='s'){s++; ts++; if(s>=3){so++; s=0; b=0;}}
-            else if(type=='b'){b++; tb++; if(b>=4){bb++; s=0; b=0;}}
-            else if(type=='f'){f++; ts++; if(s<2) s++;}
-            else if(type=='h'){h++; s=0; b=0;}
-            else if(type=='out'){out++; s=0; b=0;}
-            else if(type=='ip'){ip+=0.33;}
+            if (type == 's') {
+                s++; ts++;
+                if (s >= 3) { so++; s = 0; b = 0; }
+            } else if (type == 'b') {
+                b++; tb++;
+                if (b >= 4) { bb++; s = 0; b = 0; }
+            } else if (type == 'f') {
+                f++;
+                ts++;
+                if (s < 2) { s++; }
+            } else if (type == 'h') {
+                h++; s = 0; b = 0;
+            } else if (type == 'out') {
+                out++; s = 0; b = 0;
+            } else if (type == 'ip') {
+                ip += 0.33;
+            }
             updateUI();
         }
 
