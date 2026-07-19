@@ -16,6 +16,7 @@
         input[type="number"] { padding: 10px; width: 20%; text-align: center; }
         .stats { font-size: 18px; margin: 8px 0; font-weight: bold; }
         
+        /* Compact Grid Layout */
         .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         button { padding: 15px; font-size: 16px; border: none; border-radius: 8px; color: white; width: 100%; }
         
@@ -70,6 +71,7 @@
         <button id="resetBtn" onclick="reset()">Reset</button>
     </div>
 
+    <!-- Stats Modal -->
     <div id="statsModal" style="display:none; position:fixed; top:5%; left:2%; width:96%; height:90%; background:white; padding:15px; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:100; overflow-y:auto; border: 1px solid #ccc; box-sizing: border-box;">
         <h3>Game Stats</h3>
         <div id="statsContent" style="text-align: left; font-size: 18px; line-height: 1.8;"></div>
@@ -128,11 +130,11 @@
                 if (b >= 4) { bb++; s = 0; b = 0; }
             } else if (type == 'f') {
                 f++;
+                // Foul ball: only count as strike if count < 2
                 if (s < 2) { 
                     if(isFirstPitch){ fpc++; fps++; }
-                    ts++; s++; 
-                } else {
-                    ts++; // Foul after 2 strikes still adds to total
+                    ts++; 
+                    s++; 
                 }
             } else if (type == 'h') {
                 h++; s = 0; b = 0;
@@ -152,11 +154,14 @@
             let kPerIp = (ip > 0) ? (so / ip) : 0;
             
             let feedback = strikePct < 55 ? "Low efficiency. Focus on first-pitch strikes." : (strikePct >= 65 ? "Excellent command. Keep attacking the zone." : "Solid consistency.");
+            let efficiency = (totalPitches / (battersFaced || 1)).toFixed(1);
+            let efficiencyMsg = efficiency > 4 ? "Pitch count is climbing." : "Efficient work.";
 
             let content = `
                 <div style="background:#e8f4fd; padding:12px; border-radius:8px; margin-bottom:15px; border-left: 5px solid #007bff; text-align: left;">
                     <strong>Performance Analysis:</strong><br>
                     ${feedback}<br>
+                    ${efficiencyMsg} (Avg ${efficiency} pitches/batter)
                 </div>
                 <p><strong>First Pitch Strike %:</strong> ${firstPitchStrikePct}%</p>
                 <p><strong>Strike %:</strong> ${strikePct.toFixed(1)}%</p>
