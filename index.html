@@ -141,27 +141,27 @@
 
         function openStats() {
             let totalPitches = ts + tb;
-            let strikePct = totalPitches > 0 ? ((ts / totalPitches) * 100).toFixed(1) : "0.0";
+            let strikePct = totalPitches > 0 ? ((ts / totalPitches) * 100) : 0;
             let battersFaced = so + bb + h + out;
-            let kPerIp = (ip > 0) ? (so / ip).toFixed(2) : "0.00";
-
-            let summary = strikePct > 60 ? "Great command." : "Needs more strikes.";
-            if (f > 10) summary += " High foul count.";
+            let kPerIp = (ip > 0) ? (so / ip) : 0;
+            
+            let feedback = strikePct < 55 ? "Low efficiency. Focus on first-pitch strikes." : (strikePct >= 65 ? "Excellent command. Keep attacking the zone." : "Solid consistency.");
+            let efficiency = (totalPitches / (battersFaced || 1)).toFixed(1);
+            let efficiencyMsg = efficiency > 4 ? "Pitch count is climbing." : "Efficient work.";
 
             let content = `
-                <div style="background:#f0f0f0; padding:10px; border-radius:8px; margin-bottom:15px;">
-                    <strong>Quick Summary:</strong><br>${summary}
+                <div style="background:#e8f4fd; padding:12px; border-radius:8px; margin-bottom:15px; border-left: 5px solid #007bff; text-align: left;">
+                    <strong>Performance Analysis:</strong><br>
+                    ${feedback}<br>
+                    ${efficiencyMsg} (Avg ${efficiency} pitches/batter)
                 </div>
-                <p><strong>Total pitches:</strong> ${totalPitches}</p>
-                <p><strong>Strike %:</strong> ${strikePct}%</p>
-                <p><strong>Strikeouts:</strong> ${so}</p>
-                <p><strong>Walks:</strong> ${bb}</p>
-                <p><strong>Hits:</strong> ${h}</p>
-                <p><strong>Outs:</strong> ${out}</p>
-                <p><strong>Fouls:</strong> ${f}</p>
-                <p><strong>Batters Faced:</strong> ${battersFaced}</p>
-                <p><strong>IP:</strong> ${ip.toFixed(1)}</p>
-                <p><strong>K/IP:</strong> ${kPerIp}</p>
+                <p><strong>Strike %:</strong> ${strikePct.toFixed(1)}%</p>
+                <p><strong>K/IP:</strong> ${kPerIp.toFixed(2)}</p>
+                <hr>
+                <p><strong>Total Pitches:</strong> ${totalPitches} (${ts} S / ${tb} B)</p>
+                <p><strong>Strikeouts:</strong> ${so} | <strong>Walks:</strong> ${bb}</p>
+                <p><strong>Hits:</strong> ${h} | <strong>Outs:</strong> ${out}</p>
+                <p><strong>Fouls:</strong> ${f} | <strong>Innings:</strong> ${ip.toFixed(1)}</p>
             `;
             document.getElementById('statsContent').innerHTML = content;
             document.getElementById('statsModal').style.display = 'block';
