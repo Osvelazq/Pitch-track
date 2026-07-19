@@ -125,6 +125,7 @@
             } else if (type == 'f') {
                 f++;
                 ts++;
+                // Foul ball logic: only increase strike count if < 2
                 if (s < 2) { s++; }
             } else if (type == 'h') {
                 h++; s = 0; b = 0;
