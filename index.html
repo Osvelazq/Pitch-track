@@ -16,7 +16,6 @@
         input[type="number"] { padding: 10px; width: 20%; text-align: center; }
         .stats { font-size: 18px; margin: 8px 0; font-weight: bold; }
         
-        /* Compact Grid Layout */
         .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         button { padding: 15px; font-size: 16px; border: none; border-radius: 8px; color: white; width: 100%; }
         
@@ -27,6 +26,7 @@
         #ballBtn { background-color: #5cb85c; }   
         #hitBtn { background-color: #f0ad4e; }
         #foulBtn { background-color: #6c757d; }
+        #outBtn { background-color: #a94442; }
         #inningBtn { background-color: #5bc0de; }
         #analyzeBtn { background-color: #f77f00; }
         #exportBtn { background-color: #007bff; }
@@ -48,13 +48,14 @@
 
     <div class="stats">Current: S:<span id="s">0</span> | B:<span id="b">0</span></div>
     <div class="stats">Total: S:<span id="ts">0</span> | B:<span id="tb">0</span></div>
-    <div class="stats">Hits: <span id="h">0</span> | Fouls: <span id="f">0</span> | IP: <span id="ip">0.0</span></div>
+    <div class="stats">Hits: <span id="h">0</span> | Fouls: <span id="f">0</span> | Outs: <span id="out">0</span> | IP: <span id="ip">0.0</span></div>
     
     <div class="button-grid">
         <button id="strikeBtn" onclick="add('s')">STRIKE</button>
         <button id="ballBtn" onclick="add('b')">BALL</button>
         <button id="foulBtn" onclick="add('f')">FOUL</button>
         <button id="hitBtn" onclick="add('h')">HIT</button>
+        <button id="outBtn" onclick="add('out')">IN-PLAY OUT</button>
         <button id="inningBtn" onclick="add('ip')" style="grid-column: span 2;">+1/3 INNING</button>
     </div>
 
@@ -69,7 +70,6 @@
         <button id="resetBtn" onclick="reset()">Reset</button>
     </div>
 
-    <!-- Stats Modal -->
     <div id="statsModal" style="display:none; position:fixed; top:5%; left:2%; width:96%; height:90%; background:white; padding:15px; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:100; overflow-y:auto; border: 1px solid #ccc; box-sizing: border-box;">
         <h3>Game Stats</h3>
         <div id="statsContent" style="text-align: left; font-size: 18px; line-height: 1.8;"></div>
@@ -77,14 +77,14 @@
     </div>
 
     <script>
-        let s=0, b=0, ts=0, tb=0, h=0, ip=0, so=0, bb=0, f=0;
+        let s=0, b=0, ts=0, tb=0, h=0, ip=0, so=0, bb=0, f=0, out=0;
         
         function loadData() {
             s=parseInt(localStorage.getItem('s'))||0; b=parseInt(localStorage.getItem('b'))||0;
             ts=parseInt(localStorage.getItem('ts'))||0; tb=parseInt(localStorage.getItem('tb'))||0;
             h=parseInt(localStorage.getItem('h'))||0; ip=parseFloat(localStorage.getItem('ip'))||0;
             so=parseInt(localStorage.getItem('so'))||0; bb=parseInt(localStorage.getItem('bb'))||0;
-            f=parseInt(localStorage.getItem('f'))||0;
+            f=parseInt(localStorage.getItem('f'))||0; out=parseInt(localStorage.getItem('out'))||0;
             document.getElementById('homeTeam').value = localStorage.getItem('homeTeam')||'';
             document.getElementById('homeScore').value = localStorage.getItem('homeScore')||'';
             document.getElementById('awayTeam').value = localStorage.getItem('awayTeam')||'';
@@ -96,6 +96,7 @@
             document.getElementById('s').innerText=s; document.getElementById('b').innerText=b;
             document.getElementById('ts').innerText=ts; document.getElementById('tb').innerText=tb;
             document.getElementById('h').innerText=h; document.getElementById('f').innerText=f;
+            document.getElementById('out').innerText=out;
             document.getElementById('ip').innerText=ip.toFixed(1);
             document.getElementById('so').innerText=so; document.getElementById('bb').innerText=bb;
             saveData();
@@ -105,6 +106,7 @@
             localStorage.setItem('s',s); localStorage.setItem('b',b); localStorage.setItem('ts',ts);
             localStorage.setItem('tb',tb); localStorage.setItem('h',h); localStorage.setItem('ip',ip);
             localStorage.setItem('so',so); localStorage.setItem('bb',bb); localStorage.setItem('f',f);
+            localStorage.setItem('out',out);
             localStorage.setItem('homeTeam', document.getElementById('homeTeam').value);
             localStorage.setItem('homeScore', document.getElementById('homeScore').value);
             localStorage.setItem('awayTeam', document.getElementById('awayTeam').value);
@@ -116,6 +118,7 @@
             else if(type=='b'){b++; tb++; if(b>=4){bb++; s=0; b=0;}}
             else if(type=='f'){f++; ts++; if(s<2) s++;}
             else if(type=='h'){h++; s=0; b=0;}
+            else if(type=='out'){out++; s=0; b=0;}
             else if(type=='ip'){ip+=0.33;}
             updateUI();
         }
@@ -123,7 +126,7 @@
         function openStats() {
             let totalPitches = ts + tb;
             let strikePct = totalPitches > 0 ? ((ts / totalPitches) * 100).toFixed(1) : "0.0";
-            let battersFaced = so + bb + h;
+            let battersFaced = so + bb + h + out;
             let kPerIp = (ip > 0) ? (so / ip).toFixed(2) : "0.00";
 
             let content = `
@@ -132,6 +135,7 @@
                 <p><strong>Strikeouts:</strong> ${so}</p>
                 <p><strong>Walks:</strong> ${bb}</p>
                 <p><strong>Hits:</strong> ${h}</p>
+                <p><strong>Outs:</strong> ${out}</p>
                 <p><strong>Fouls:</strong> ${f}</p>
                 <p><strong>Batters Faced:</strong> ${battersFaced}</p>
                 <p><strong>IP:</strong> ${ip.toFixed(1)}</p>
@@ -149,7 +153,7 @@
             const data=[
                 ["Teams", document.getElementById('homeTeam').value + " vs " + document.getElementById('awayTeam').value],
                 ["Score", document.getElementById('homeScore').value + " - " + document.getElementById('awayScore').value],
-                ["Strikes", ts], ["Balls", tb], ["Hits", h], ["Fouls", f], ["Innings", ip.toFixed(1)], ["SO", so], ["BB", bb]
+                ["Strikes", ts], ["Balls", tb], ["Hits", h], ["Fouls", f], ["Outs", out], ["Innings", ip.toFixed(1)], ["SO", so], ["BB", bb]
             ];
             let csv="data:text/csv;charset=utf-8,"+data.map(e=>e.join(",")).join("\n");
             const link=document.createElement("a"); link.setAttribute("href",encodeURI(csv));
